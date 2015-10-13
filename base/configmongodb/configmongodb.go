@@ -16,7 +16,7 @@ func init() {
 
 func initDb() {
 	var err error
-	session, err = mgo.Dial("127.0.0.1")
+	session, err = mgo.Dial("mongodb://admin:cyS6Uq67Vghq@127.12.197.2:27017/")
 	if err != nil {
 		panic(err)
 	}
