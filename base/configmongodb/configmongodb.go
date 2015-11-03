@@ -1,9 +1,9 @@
 package configmongodb
 
 import (
-	// "fmt"
+	"fmt"
 	"gopkg.in/mgo.v2"
-	//  "gopkg.in/mgo.v2/bson"
+	"os"
 )
 
 var (
@@ -16,7 +16,14 @@ func init() {
 
 func initDb() {
 	var err error
-	session, err = mgo.Dial("127.0.0.1")
+	MONGO_USER := os.Getenv("MONGO_USER")
+	MONGO_PASS := os.Getenv("MONGO_PASS")
+	MONGO_HOST := os.Getenv("MONGO_HOST")
+	MONGO_PORT := os.Getenv("MONGO_PORT")
+
+	urlConection := fmt.Sprint("mongodb://", MONGO_USER, ":", MONGO_PASS, "@", MONGO_HOST, ":", MONGO_PORT)
+	session, err = mgo.Dial(urlConection)
+
 	if err != nil {
 		panic(err)
 	}
