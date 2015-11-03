@@ -4,5 +4,5 @@ package api
 type Response struct {
 	Data   interface{} `json:"data,omitempty"`
 	Errors interface{} `json:"errors,omitempty"`
-	Error  bool `json:"error"`
+	Error  bool        `json:"error"`
 }
