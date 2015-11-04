@@ -8,6 +8,7 @@ import (
 
 var (
 	session *mgo.Session
+	Db  string
 )
 
 func init() {
@@ -37,6 +38,6 @@ func Sess() *mgo.Session {
 }
 
 func Collection(name string) (col *mgo.Collection, err error) {
-	col = session.DB("inspec").C(name)
+	col = session.DB(Db).C(name)
 	return col, err
 }
