@@ -2,6 +2,10 @@
 // a un consumer JSON.
 package api
 
+import (
+	"fmt"
+)
+
 type Err struct {
 	Errors []Msg `json:"errors"`
 }
@@ -32,6 +36,16 @@ func (self *Err) Len() int {
 
 func (self *Err) Failed() bool {
 	return len(self.Errors) > 0
+}
+
+// Error implements error interface, joining each Msg field, error and code
+func (e *Err) Error() string {
+	var err string
+	for _, m := range e.Errors {
+		err = fmt.Sprintf("%s %s: %s code: %d\n", err, m.Field, m.Error, m.Code)
+	}
+
+	return err
 }
 
 func NewError() *Err {
