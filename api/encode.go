@@ -20,3 +20,19 @@ func EncodeRequest(r *http.Request, request interface{}) error {
 	r.Body = ioutil.NopCloser(&buf)
 	return nil
 }
+
+func EncodeError(w http.ResponseWriter, i error) {
+	var buf bytes.Buffer
+	w.Header().Set(`Content-Type`, `application/json`)
+
+	if err := json.NewEncoder(&buf).Encode(i); err != nil {
+		jserr := NewError()
+		jserr.SetErr(`INTERNAL_ERROR`, err.Error(), 500)
+		EncodeError(w, jserr)
+		return
+	}
+
+	// TODO: allow to configure status header [how? I still don't know :/]
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(i)
+}
