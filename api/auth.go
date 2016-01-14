@@ -2,30 +2,30 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
- 	"io/ioutil"
+	"io/ioutil"
+	"net/http"
 )
 
-func Auth(authEndPoint string,next http.Handler) http.Handler {
+func Auth(authEndPoint string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
- 		var (
- 			accessToken string
- 			url string
- 			client http.Client
- 			err *Err
- 		)
+		var (
+			accessToken string
+			url         string
+			client      http.Client
+			err         *Err
+		)
 
- 		accessToken = r.Header.Get("Authorization")  
- 	 	
- 		if accessToken == "" {
- 			err = NewError()
- 			err.Push(Msg{Error: `ACCESS_TOKEN_NOT_PRESENT`})
- 			json.NewEncoder(w).Encode(err)
- 			return
- 		}
+		accessToken = r.Header.Get("Authorization")
 
- 		url  = fmt.Sprint(authEndPoint, accessToken)
+		if accessToken == "" {
+			err = NewError()
+			err.Push(Msg{Error: `ACCESS_TOKEN_NOT_PRESENT`})
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		url = fmt.Sprint(authEndPoint, accessToken)
 		req, _ := http.NewRequest("GET", url, nil)
 		res, errService := client.Do(req)
 
@@ -33,21 +33,21 @@ func Auth(authEndPoint string,next http.Handler) http.Handler {
 			err = NewError()
 			err.Push(Msg{Error: `AUTH_SERVICE_ERROR`})
 			json.NewEncoder(w).Encode(err)
- 			return
+			return
 		}
 
 		defer res.Body.Close()
 
 		// response service
-		body, _  := ioutil.ReadAll(res.Body)
-		errParse := json.Unmarshal(body,&err)
+		body, _ := ioutil.ReadAll(res.Body)
+		errParse := json.Unmarshal(body, &err)
 
-		// error parse json response 
+		// error parse json response
 		if errParse != nil {
 			err = NewError()
 			err.Push(Msg{Error: `AUTH_SERVICE_RESPONSE_ERROR`})
 			json.NewEncoder(w).Encode(err)
- 			return
+			return
 		}
 
 		// access_token_not_valid
@@ -55,6 +55,6 @@ func Auth(authEndPoint string,next http.Handler) http.Handler {
 			json.NewEncoder(w).Encode(err)
 			return
 		}
-	    next.ServeHTTP(w, r)
-  	})
+		next.ServeHTTP(w, r)
+	})
 }
