@@ -14,6 +14,7 @@ func Auth(authEndPoint string, next http.Handler) http.Handler {
 			url         string
 			client      http.Client
 			err         *Err
+			resApi      *Response
 		)
 
 		accessToken = r.Header.Get("Authorization")
@@ -21,7 +22,8 @@ func Auth(authEndPoint string, next http.Handler) http.Handler {
 		if accessToken == "" {
 			err = NewError()
 			err.Push(Msg{Error: `ACCESS_TOKEN_NOT_PRESENT`})
-			json.NewEncoder(w).Encode(err)
+			resApi = &Response{Errors:err.Errors,Error:true}
+			json.NewEncoder(w).Encode(resApi)
 			return
 		}
 
@@ -32,7 +34,8 @@ func Auth(authEndPoint string, next http.Handler) http.Handler {
 		if errService != nil {
 			err = NewError()
 			err.Push(Msg{Error: `AUTH_SERVICE_ERROR`})
-			json.NewEncoder(w).Encode(err)
+			resApi = &Response{Errors:err.Errors,Error:true}
+			json.NewEncoder(w).Encode(resApi)
 			return
 		}
 
@@ -46,13 +49,15 @@ func Auth(authEndPoint string, next http.Handler) http.Handler {
 		if errParse != nil {
 			err = NewError()
 			err.Push(Msg{Error: `AUTH_SERVICE_RESPONSE_ERROR`})
-			json.NewEncoder(w).Encode(err)
+			resApi = &Response{Errors:err.Errors, Error:true}
+			json.NewEncoder(w).Encode(resApi)
 			return
 		}
 
 		// access_token_not_valid
 		if err.Failed() {
-			json.NewEncoder(w).Encode(err)
+			resApi = &Response{Errors:err.Errors,Error:true}
+			json.NewEncoder(w).Encode(resApi)
 			return
 		}
 		next.ServeHTTP(w, r)
