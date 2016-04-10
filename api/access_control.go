@@ -10,9 +10,9 @@ func AccessControl(h http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
 
-		if r.Method == "OPTIONS" {
-			return
-		}
+//		if r.Method == "OPTIONS" {
+//			return
+//		}
 
 		h.ServeHTTP(w, r)
 	})
