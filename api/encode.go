@@ -10,7 +10,6 @@ import (
 func EncodeResponse(w http.ResponseWriter, response interface{}) error {
 	w.Header().Set("Access-Control-Allow-Origin", "*")	
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "POST, GET, PUT, DELETE, OPTIONS")
 	return json.NewEncoder(w).Encode(response)
 }
 
