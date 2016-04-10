@@ -24,13 +24,7 @@ const (
 
 
 func EncodeResponse(w http.ResponseWriter, response interface{}) error {
-	if o := r.Header.Get(origin); o != "" {
-		w.Header().Set(allow_origin, o)
-	} else {
-		w.Header().Set(allow_origin, "*")
-	}
-
-		// Set other headers
+	w.Header().Set(allow_origin, "*")
 	w.Header().Set(allow_headers, headers)
 	w.Header().Set(allow_methods, methods)
 	w.Header().Set(allow_credentials, credentials)
