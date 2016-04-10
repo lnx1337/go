@@ -24,7 +24,7 @@ const (
 
 
 func EncodeResponse(w http.ResponseWriter, response interface{}) error {
-	w.Header().Set(allow_origin, "*")
+	w.Header().Set(allow_origin, "http://www.w3schools.com")
 	w.Header().Set(allow_headers, headers)
 	w.Header().Set(allow_methods, methods)
 	w.Header().Set(allow_credentials, credentials)
