@@ -3,11 +3,12 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"golang.org/x/net/context"
 	"io/ioutil"
 	"net/http"
 )
 
-func EncodeResponse(w http.ResponseWriter, response interface{}) error {
+func EncodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization")
@@ -24,14 +25,14 @@ func EncodeRequest(r *http.Request, request interface{}) error {
 	return nil
 }
 
-func EncodeError(w http.ResponseWriter, i error) {
+func EncodeError(ctx context.Context, i error, w http.ResponseWriter) {
 	var buf bytes.Buffer
 	w.Header().Set(`Content-Type`, `application/json`)
 
 	if err := json.NewEncoder(&buf).Encode(i); err != nil {
 		jserr := NewError()
 		jserr.SetErr(`INTERNAL_ERROR`, err.Error(), 500)
-		EncodeError(w, jserr)
+		EncodeError(ctx, jserr, w)
 		return
 	}
 

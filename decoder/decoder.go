@@ -6,6 +6,7 @@ package decoder
 import (
 	"encoding/json"
 	api "github.com/lnx1337/go/api"
+	"golang.org/x/net/context"
 	"net/http"
 )
 
@@ -28,8 +29,8 @@ type (
 )
 
 // DecodeCreateRequest decodes a POST request into a provided interface
-func DecodeCreateRequest(req interface{}, field string) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
+func DecodeCreateRequest(req interface{}, field string) func(context.Context, *http.Request) (interface{}, error) {
+	return func(_ context.Context, r *http.Request) (interface{}, error) {
 		if len(r.URL.Query().Get(field)) != 0 {
 			return req, nil
 		}
@@ -46,8 +47,8 @@ func DecodeCreateRequest(req interface{}, field string) func(*http.Request) (int
 
 // DecodeCreateIDRequest creates a decoder that assings an ID to the returned interface
 // for a POST request
-func DecodeCreateIDRequest(req IDSetter, field string) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
+func DecodeCreateIDRequest(req IDSetter, field string) func(context.Context, *http.Request) (interface{}, error) {
+	return func(_ context.Context, r *http.Request) (interface{}, error) {
 		if r.ContentLength <= 0 && len(r.URL.Query().Get(field)) == 0 {
 			return req, nil
 		}
@@ -64,8 +65,8 @@ func DecodeCreateIDRequest(req IDSetter, field string) func(*http.Request) (inte
 
 // DecodeReadIDRequest creates a decoder that assings an ID to the returned interface
 // for a GET request
-func DecodeReadIDRequest(req IDSetter, field string) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
+func DecodeReadIDRequest(req IDSetter, field string) func(context.Context, *http.Request) (interface{}, error) {
+	return func(_ context.Context, r *http.Request) (interface{}, error) {
 		if r.ContentLength != 0 || len(r.URL.Query().Get(field)) == 0 {
 			return req, nil
 		}
@@ -75,8 +76,8 @@ func DecodeReadIDRequest(req IDSetter, field string) func(*http.Request) (interf
 }
 
 // DecodeUpdateRequest creates a decoder for a PUT request
-func DecodeUpdateRequest(req IDSetter, field string) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
+func DecodeUpdateRequest(req IDSetter, field string) func(context.Context, *http.Request) (interface{}, error) {
+	return func(_ context.Context, r *http.Request) (interface{}, error) {
 		if r.ContentLength <= 0 && len(r.URL.Query().Get(field)) == 0 {
 			return req, nil
 		}
