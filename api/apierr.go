@@ -18,6 +18,7 @@ type Msg struct {
 }
 
 func (self *Err) Push(message Msg) error {
+	self.HasErrors = true
 	self.Errors = append(self.Errors, message)
 	return nil
 }
