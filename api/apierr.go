@@ -7,6 +7,7 @@ import (
 )
 
 type Err struct {
+	HasErrors  bool `json:"hasErrors"` 
 	Errors []Msg `json:"errors"`
 }
 
