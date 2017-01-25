@@ -2,15 +2,14 @@ package dh
 
 import (
 	"database/sql"
-	"github.com/astaxie/beego/validation"
 	"reflect"
-	"appworkz/base/api"
-	conn "appworkz/base/configdb"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
+	"github.com/lnx1337/go/api"
+	conn "github.com/lnx1337/go/configdb"
 	"upper.io/db"
-	// "upper.io/db/mysql"
 	"upper.io/db/util/sqlutil"
-	// "fmt"
 )
 
 // @ descripcion
@@ -52,7 +51,7 @@ func (self *Dh) SqlDriver() *sql.DB {
 func (self *Dh) Save() (int64, api.Err) {
 	var errs api.Err
 	if exist := self.Exist(); exist {
-		 _, errup := self.Update()
+		_, errup := self.Update()
 		return 0, errup
 	}
 
@@ -140,7 +139,7 @@ func (self *Dh) FindAllByConditions(bar interface{}, conditions interface{}) api
 	return errs
 }
 
-func (self *Dh) FindAllByConditionsSortBy(bar interface{}, conditions interface{},sort string) api.Err {
+func (self *Dh) FindAllByConditionsSortBy(bar interface{}, conditions interface{}, sort string) api.Err {
 	var res db.Result
 	var errs api.Err
 	res = Collection.Find(conditions).Sort(sort)
@@ -184,7 +183,7 @@ func (self *Dh) FindAll(bar interface{}) api.Err {
 	return errs
 }
 
-func (self *Dh) FindAllSortBy(bar interface{},sort string) api.Err {
+func (self *Dh) FindAllSortBy(bar interface{}, sort string) api.Err {
 	var res db.Result
 	var errs api.Err
 	res = Collection.Find().Sort(sort)
@@ -244,7 +243,7 @@ func (self *Dh) Count(query string) int64 {
 			Error: err.Error(),
 		})
 	}
-	
+
 	defer rows.Close()
 	return total[0].Count
 }
@@ -254,10 +253,9 @@ func (self *Dh) Count(query string) int64 {
 // La busca por su PK
 func (self *Dh) Exist() bool {
 
-
 	s := reflect.ValueOf(self.Model).Elem().Field(0)
 	id := s.Interface().(int64)
-	// change the field id 
+	// change the field id
 	// fmt.Println(s.Interface().(int64))
 	// fmt.Println(reflect.ValueOf(self.Model).Elem().FieldByName("Id"),"data")
 	// id := reflect.ValueOf(self.Model).Elem().FieldByName("Id").Interface().(int64)

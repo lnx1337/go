@@ -3,10 +3,10 @@ package configdb
 
 import (
 	"fmt"
-	"appworkz/base/config"
+
+	"github.com/lnx1337/go/config"
 	"upper.io/db"
 	_ "upper.io/db/mysql"
-	// _ "upper.io/db/postgresql"
 )
 
 type Settings struct {
