@@ -1,13 +1,18 @@
 package dh
 
 import (
+	"fmt"
+
+	conn "github.com/lnx1337/go/configdb"
+
 	"database/sql"
 	"reflect"
 	"strings"
 
+	"golang.org/x/net/context"
+
 	"github.com/astaxie/beego/validation"
 	"github.com/lnx1337/go/api"
-	conn "github.com/lnx1337/go/configdb"
 	"upper.io/db"
 	"upper.io/db/util/sqlutil"
 )
@@ -25,7 +30,10 @@ type Dh struct {
 }
 
 // La variable Collection contiene la conexion a nuestra tabla
-var Collection db.Collection
+var (
+	Collection db.Collection
+	Sess       db.Database
+)
 
 // NewDh
 // inicializamos nuestra conexiona nuestra tabla
@@ -34,11 +42,29 @@ func NewDh(model interface{}) Dh {
 	self := Dh{Model: model}
 	val := reflect.ValueOf(model)
 	table := self.GetTableName(val)
+
 	var err error
 	Collection, err = conn.Collection(table)
 	if err != nil {
 		panic(err.Error())
 	}
+	return self
+}
+
+func NewDhWithContext(ctx context.Context, model interface{}) Dh {
+	self := Dh{Model: model}
+	val := reflect.ValueOf(model)
+	table := self.GetTableName(val)
+
+	sess := ctx.Value("main").(db.Database)
+	fmt.Println(sess)
+
+	var err error
+	Collection, err = sess.Collection(table)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return self
 }
 
@@ -65,8 +91,12 @@ func (self *Dh) Save() (int64, api.Err) {
 		return 0, errs
 	}
 
-	idInsert := id.(int64)
-	return idInsert, errs
+	if _, ok := id.(int64); ok {
+		idInsert := id.(int64)
+		return idInsert, errs
+	}
+
+	return 0, errs
 }
 
 // FindById
