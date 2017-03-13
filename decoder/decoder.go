@@ -6,7 +6,7 @@ package decoder
 import (
 	"encoding/json"
 	api "github.com/lnx1337/go/api"
-	"golang.org/x/net/context"
+	"context"
 	"net/http"
 )
 
