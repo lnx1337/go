@@ -3,7 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"golang.org/x/net/context"
+	"context"
 	"io/ioutil"
 	"net/http"
 )
